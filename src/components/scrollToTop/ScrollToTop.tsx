@@ -41,19 +41,17 @@ const ScrollToTop: FC = () => {
 				>
 					<motion.button
 						onClick={scrollToTop}
-						className='bg-primary'
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.9 }}
 						aria-label='Кнопка наверх страницы'
 						style={{
+							background: 'none',
 							border: 'none',
-							borderRadius: '50%',
-							padding: '20px',
+							padding: 0,
 							cursor: 'pointer',
-							boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
 						}}
 					>
-						<IoIosArrowRoundUp size={24} color='#fff' />
+						<IoIosArrowRoundUp size={20} color='#222' />
 					</motion.button>
 				</motion.div>
 			)}
