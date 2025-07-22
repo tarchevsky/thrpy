@@ -14,9 +14,7 @@ export default function SwingPage() {
 	return (
 		<>
 			<HomeLink />
-		   <blockquote className='border-l-4 border-blue-400 pl-4 py-2 mb-6 bg-blue-50 text-lg font-semibold italic'>
-			 Эмоциональные качели: экзистенциальный диалог с собой
-		   </blockquote>
+			<PageHeading title='Эмоциональные качели: экзистенциальный диалог с собой' />
 			<FadeIn className='ind cont flex flex-col gap-6 md:gap-8 text-[15px] md:text-base leading-relaxed'>
 				<section>
 					<p className='italic text-sm mb-4'>

@@ -38,10 +38,10 @@ export default async function TreePage() {
 					</ul>
 				</section>
 
-			   <section>
-				   <h2 className='text-lg font-semibold mb-4 normal-case'>
-					   1. Расширенная классификация дефектов характера
-				   </h2>
+				<section>
+					<h2 className='text-lg font-semibold mb-4 normal-case'>
+						1. Расширенная классификация дефектов характера
+					</h2>
 					<div className='mb-4'>
 						<h3 className='font-medium'>
 							1. Лень{' '}
@@ -275,7 +275,7 @@ export default async function TreePage() {
 						интенсивных тренингов личностного роста.
 					</p>
 				</section>
-		   </FadeIn>
-	   </>
-   )
+			</FadeIn>
+		</>
+	)
 }
