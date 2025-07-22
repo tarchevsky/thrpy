@@ -4,6 +4,7 @@ import Burger from '@/components/burger/Burger'
 import ThemeToggle from '@/components/themeToggle/ThemeToggle'
 import type { HeaderProps, MenuItem } from '@/types'
 import cn from 'clsx'
+import { motion, useAnimation, useMotionValue } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -16,31 +17,28 @@ const Header = ({
 	isBurgerVersion = false
 }: HeaderProps) => {
 	const [isMenuActive, setIsMenuActive] = useState(false)
-	const [menuOffset, setMenuOffset] = useState(0) // px смещение меню вниз
-	const [isDragging, setIsDragging] = useState(false)
-	const [dragType, setDragType] = useState<'open' | 'close' | null>(null)
-
 	const menuItems: MenuItem[] = [{ path: '/', label: 'Главная' }]
 	const pathname = usePathname()
 
-	const [touchStartY, setTouchStartY] = useState<number | null>(null)
-	const [currentTouchY, setCurrentTouchY] = useState<number | null>(null)
+	const y = useMotionValue(0)
+	const controls = useAnimation()
+	const DRAG_CLOSE_THRESHOLD = 80 // px
 
 	const toggleMenu = () => {
 		setIsMenuActive(!isMenuActive)
-		setMenuOffset(0)
+		y.set(0)
 	}
 
 	const handleMenuItemClick = (path: string) => {
 		if (path === pathname) {
 			setIsMenuActive(false)
-			setMenuOffset(0)
+			y.set(0)
 		}
 	}
 
 	useEffect(() => {
 		setIsMenuActive(false)
-		setMenuOffset(0)
+		y.set(0)
 	}, [pathname])
 
 	useEffect(() => {
@@ -48,242 +46,96 @@ const Header = ({
 			document.body.style.overflow = 'hidden'
 		} else {
 			document.body.style.overflow = 'unset'
-			setMenuOffset(0)
+			y.set(0)
 		}
-	}, [isMenuActive])
+	}, [isMenuActive, y])
 
-	// --- swipe to open/close logic ---
-	useEffect(() => {
-		if (isMenuActive) return
-		const openZone = document.getElementById('open-menu-zone')
-		if (!openZone) return
-
-		const handleTouchStart = (e: TouchEvent) => {
-			setTouchStartY(e.touches[0].clientY)
-			setCurrentTouchY(e.touches[0].clientY)
-			setIsDragging(true)
-			setDragType('open')
+	// --- framer-motion drag logic ---
+	const handleDragEnd = (_: any, info: { offset: { y: number } }) => {
+		if (info.offset.y > DRAG_CLOSE_THRESHOLD) {
+			controls.start({ y: '100%', transition: { duration: 0.2 } })
+			setTimeout(() => {
+				setIsMenuActive(false)
+				y.set(0)
+			}, 200)
+		} else {
+			controls.start({ y: 0, transition: { duration: 0.2 } })
 		}
-		const handleTouchMove = (e: TouchEvent) => {
-			if (touchStartY !== null && isDragging && dragType === 'open') {
-				const delta = touchStartY - e.touches[0].clientY
-				setCurrentTouchY(e.touches[0].clientY)
-				setMenuOffset(delta > 0 ? delta : 0)
-			}
-		}
-		const handleTouchEnd = () => {
-			if (
-				touchStartY !== null &&
-				currentTouchY !== null &&
-				isDragging &&
-				dragType === 'open' &&
-				touchStartY - currentTouchY > 60
-			) {
-				setIsMenuActive(true)
-				setMenuOffset(0)
-			} else {
-				setMenuOffset(0)
-			}
-			setTouchStartY(null)
-			setCurrentTouchY(null)
-			setIsDragging(false)
-			setDragType(null)
-		}
-		openZone.addEventListener('touchstart', handleTouchStart)
-		openZone.addEventListener('touchmove', handleTouchMove)
-		openZone.addEventListener('touchend', handleTouchEnd)
-		return () => {
-			openZone.removeEventListener('touchstart', handleTouchStart)
-			openZone.removeEventListener('touchmove', handleTouchMove)
-			openZone.removeEventListener('touchend', handleTouchEnd)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isMenuActive, touchStartY, currentTouchY, isDragging, dragType])
-
-	// Закрытие меню свайпом вниз с верхнего края меню
-	useEffect(() => {
-		if (!isMenuActive) return
-		const closeZone = document.getElementById('close-menu-zone')
-		if (!closeZone) return
-
-		const handleTouchStart = (e: TouchEvent) => {
-			setTouchStartY(e.touches[0].clientY)
-			setCurrentTouchY(e.touches[0].clientY)
-			setIsDragging(true)
-			setDragType('close')
-		}
-		const handleTouchMove = (e: TouchEvent) => {
-			if (touchStartY !== null && isDragging && dragType === 'close') {
-				const delta = e.touches[0].clientY - touchStartY
-				setCurrentTouchY(e.touches[0].clientY)
-				setMenuOffset(delta > 0 ? delta : 0)
-			}
-		}
-		const handleTouchEnd = () => {
-			if (
-				touchStartY !== null &&
-				currentTouchY !== null &&
-				isDragging &&
-				dragType === 'close' &&
-				currentTouchY - touchStartY > 60
-			) {
-				setMenuOffset(window.innerHeight * 0.5 + 100)
-				setTimeout(() => {
-					setIsMenuActive(false)
-					setMenuOffset(0)
-				}, 200)
-			} else {
-				setMenuOffset(0)
-			}
-			setTouchStartY(null)
-			setCurrentTouchY(null)
-			setIsDragging(false)
-			setDragType(null)
-		}
-		closeZone.addEventListener('touchstart', handleTouchStart)
-		closeZone.addEventListener('touchmove', handleTouchMove)
-		closeZone.addEventListener('touchend', handleTouchEnd)
-		return () => {
-			closeZone.removeEventListener('touchstart', handleTouchStart)
-			closeZone.removeEventListener('touchmove', handleTouchMove)
-			closeZone.removeEventListener('touchend', handleTouchEnd)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isMenuActive, touchStartY, currentTouchY, isDragging, dragType])
-
-	// --- swipe to close logic ---
-	useEffect(() => {
-		if (!isMenuActive) return
-		const nav = document.getElementById('mobile-nav')
-		if (!nav) return
-
-		const handleTouchStart = (e: TouchEvent) => {
-			setTouchStartY(e.touches[0].clientY)
-			setCurrentTouchY(e.touches[0].clientY)
-		}
-		const handleTouchMove = (e: TouchEvent) => {
-			if (touchStartY !== null) {
-				const delta = e.touches[0].clientY - touchStartY
-				setCurrentTouchY(e.touches[0].clientY)
-				setMenuOffset(delta > 0 ? delta : 0)
-			}
-		}
-		const handleTouchEnd = () => {
-			if (
-				touchStartY !== null &&
-				currentTouchY !== null &&
-				currentTouchY - touchStartY > 60
-			) {
-				// Плавно уводим меню вниз
-				setMenuOffset(window.innerHeight * 0.5 + 100) // чуть больше половины экрана
-				setTimeout(() => {
-					setIsMenuActive(false)
-					setMenuOffset(0)
-				}, 200)
-			} else {
-				// Возвращаем меню на место
-				setMenuOffset(0)
-			}
-			setTouchStartY(null)
-			setCurrentTouchY(null)
-		}
-		nav.addEventListener('touchstart', handleTouchStart)
-		nav.addEventListener('touchmove', handleTouchMove)
-		nav.addEventListener('touchend', handleTouchEnd)
-		return () => {
-			nav.removeEventListener('touchstart', handleTouchStart)
-			nav.removeEventListener('touchmove', handleTouchMove)
-			nav.removeEventListener('touchend', handleTouchEnd)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isMenuActive, touchStartY, currentTouchY])
+	}
 
 	return (
-		<>
-			{/* Зона для свайпа вверх (открытие меню) */}
-			{isBurgerVersion && !isMenuActive && (
-				<div
-					id='open-menu-zone'
-					style={{
-						position: 'fixed',
-						left: 0,
-						right: 0,
-						bottom: 0,
-						height: 40,
-						zIndex: 30
-					}}
-				/>
-			)}
-			<FadeIn className='cont'>
-				<header className='relative flex gap-6 justify-between items-center py-4 m-auto'>
-					<div className='my-4 flex flex-col z-20'>
-						<Logo />
-					</div>
-					<nav
+		<FadeIn className='cont'>
+			<header className='relative flex gap-6 justify-between items-center py-4 m-auto'>
+				<div className='my-4 flex flex-col z-20'>
+					<Logo />
+				</div>
+				{isBurgerVersion ? (
+					<motion.nav
 						id='mobile-nav'
-						style={
-							isBurgerVersion && (isMenuActive || isDragging) && menuOffset > 0
-								? {
-										transform: `translateY(${menuOffset}px)`,
-										transition:
-											touchStartY === null && !isDragging
-												? 'transform 0.3s cubic-bezier(0.4,0,0.2,1)'
-												: 'none',
-										willChange: 'transform',
-										opacity: 1
-									}
-								: isBurgerVersion && (isMenuActive || isDragging)
-									? {
-											transform: 'translateY(0)',
-											transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
-											willChange: 'transform',
-											opacity: 1
-										}
-									: {}
-						}
+						initial={{ y: '100%' }}
+						animate={isMenuActive ? controls : { y: '100%' }}
+						style={{ y }}
+						drag='y'
+						dragDirectionLock
+						dragConstraints={{ top: 0, bottom: 0 }}
+						onDragEnd={handleDragEnd}
 						className={cn(
-							{ [styles.active]: isMenuActive || isDragging },
-							'fixed z-20 w-full h-1/2 end-0 bottom-0',
-							{
-								// Если меню не активно и не тянется — скрываем
-								'translate-y-full opacity-0 transition-all duration-300 ease-out':
-									!isMenuActive && !isDragging,
-								// Если меню тянется или активно — показываем
-								'opacity-100': isMenuActive || isDragging,
-								'md:static md:w-auto md:h-auto md:translate-y-0 md:opacity-100':
-									!isBurgerVersion
-							}
+							{ [styles.active]: isMenuActive },
+							'fixed z-20 w-full h-1/2 end-0 bottom-0 translate-y-full opacity-0 transition-all duration-300 ease-out'
 						)}
 					>
-						{/* Зона для свайпа вниз (закрытие меню) */}
-						{isBurgerVersion && isMenuActive && (
-							<div
-								id='close-menu-zone'
-								style={{
-									position: 'absolute',
-									left: 0,
-									right: 0,
-									top: 0,
-									height: 40,
-									zIndex: 30
-								}}
-							/>
+						<ul
+							tabIndex={0}
+							className={cn(
+								'absolute menu flex-nowrap gap-5 start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+							)}
+						>
+							{menuItems.map((item, index) => (
+								<li
+									key={index}
+									className={cn(styles.item, 'block text-center opacity-0')}
+								>
+									<Link
+										className={cn('px-[10px] btn font-normal', {
+											'btn-primary text-base-100 dark:text-primary-content':
+												highlighting && item.path === pathname,
+											'btn-ghost':
+												!highlighting ||
+												(highlighting && item.path !== pathname)
+										})}
+										href={item.path}
+										onClick={() => handleMenuItemClick(item.path)}
+									>
+										{item.label}
+									</Link>
+								</li>
+							))}
+							<li className='justify-center'>
+								<ThemeToggle />
+							</li>
+						</ul>
+					</motion.nav>
+				) : (
+					<nav
+						id='mobile-nav'
+						className={cn(
+							{ [styles.active]: isMenuActive },
+							'fixed z-20 w-full h-1/2 end-0 bottom-0 translate-y-full opacity-0 transition-all duration-300 ease-out',
+							' md:static md:w-auto md:h-auto md:translate-y-0 md:opacity-100'
 						)}
+					>
 						<ul
 							tabIndex={0}
 							className={cn(
 								'absolute menu flex-nowrap gap-5 start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
-								{
-									'md:static md:menu-horizontal md:translate-y-0 md:translate-x-0':
-										!isBurgerVersion
-								}
+								' md:static md:menu-horizontal md:translate-y-0 md:translate-x-0'
 							)}
 						>
 							{menuItems.map((item, index) => (
 								<li
 									key={index}
 									className={cn(styles.item, 'block text-center opacity-0', {
-										'md:opacity-100': !isBurgerVersion
+										' md:opacity-100': !isBurgerVersion
 									})}
 								>
 									<Link
@@ -306,10 +158,10 @@ const Header = ({
 							</li>
 						</ul>
 					</nav>
-					<Burger toggleMenu={toggleMenu} isActive={isMenuActive} />
-				</header>
-			</FadeIn>
-		</>
+				)}
+				<Burger toggleMenu={toggleMenu} isActive={isMenuActive} />
+			</header>
+		</FadeIn>
 	)
 }
 
