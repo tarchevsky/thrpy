@@ -222,27 +222,34 @@ const Header = ({
 					<nav
 						id='mobile-nav'
 						style={
-							isBurgerVersion && isMenuActive && menuOffset > 0
+							isBurgerVersion && (isMenuActive || isDragging) && menuOffset > 0
 								? {
 										transform: `translateY(${menuOffset}px)`,
 										transition:
-											touchStartY === null
+											touchStartY === null && !isDragging
 												? 'transform 0.3s cubic-bezier(0.4,0,0.2,1)'
 												: 'none',
-										willChange: 'transform'
+										willChange: 'transform',
+										opacity: 1
 									}
-								: isBurgerVersion && isMenuActive
+								: isBurgerVersion && (isMenuActive || isDragging)
 									? {
 											transform: 'translateY(0)',
 											transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
-											willChange: 'transform'
+											willChange: 'transform',
+											opacity: 1
 										}
 									: {}
 						}
 						className={cn(
-							{ [styles.active]: isMenuActive },
-							'fixed z-20 w-full h-1/2 end-0 bottom-0 translate-y-full opacity-0 transition-all duration-300 ease-out',
+							{ [styles.active]: isMenuActive || isDragging },
+							'fixed z-20 w-full h-1/2 end-0 bottom-0',
 							{
+								// Если меню не активно и не тянется — скрываем
+								'translate-y-full opacity-0 transition-all duration-300 ease-out':
+									!isMenuActive && !isDragging,
+								// Если меню тянется или активно — показываем
+								'opacity-100': isMenuActive || isDragging,
 								'md:static md:w-auto md:h-auto md:translate-y-0 md:opacity-100':
 									!isBurgerVersion
 							}
