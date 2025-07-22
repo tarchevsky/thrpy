@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function TreePage() {
 	return (
 		<>
-			<div className='py-16 prose m-auto'>
+			<div className='md:py-16 prose m-auto'>
 				<Breadcrumbs items={treeBreadcrumbs} />
 				<PageHeading title='Дефекты характера: как они формируются и как с ними работать' />
 				<FadeIn className='ind cont flex flex-col gap-4 text-[15px] md:text-base leading-relaxed'>

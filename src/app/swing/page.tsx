@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function SwingPage() {
 	return (
 		<>
-			<div className='py-16 prose m-auto'>
+			<div className='md:py-16 prose m-auto'>
 				<Breadcrumbs items={swingBreadcrumbs} />
 				<PageHeading title='Эмоциональные качели: экзистенциальный диалог с собой' />
 				<FadeIn className='ind cont flex flex-col gap-6 md:gap-8 text-[15px] md:text-base leading-relaxed '>
