@@ -73,8 +73,14 @@ const Header = ({
 				currentTouchY !== null &&
 				currentTouchY - touchStartY > 60
 			) {
-				setIsMenuActive(false)
+				// Плавно уводим меню вниз
+				setMenuOffset(window.innerHeight * 0.5 + 100) // чуть больше половины экрана
+				setTimeout(() => {
+					setIsMenuActive(false)
+					setMenuOffset(0)
+				}, 200)
 			} else {
+				// Возвращаем меню на место
 				setMenuOffset(0)
 			}
 			setTouchStartY(null)
