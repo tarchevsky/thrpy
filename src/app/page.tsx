@@ -33,6 +33,22 @@ export default function HomePage() {
 						Эмоциональные качели: экзистенциальный диалог с собой
 					</Link>
 				</li>
+				<li>
+					<Link
+						className='no-underline transition-all hover:text-primary'
+						href='/apathy'
+					>
+						Выход из апатии
+					</Link>
+				</li>
+				<li>
+					<Link
+						className='no-underline transition-all hover:text-primary'
+						href='/motivation'
+					>
+						Мотивация
+					</Link>
+				</li>
 			</ul>
 		</div>
 	)
