@@ -16,12 +16,20 @@ export default function HomePage() {
 	return (
 		<div className='cont py-16 prose m-auto'>
 			<h1>Оглавление</h1>
-			<ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+			<ul>
 				<li>
-					<Link href='/tree'>Дерево дефектов</Link>
+					<Link
+						className='no-underline transition-all hover:text-primary'
+						href='/tree'
+					>
+						Дерево дефектов
+					</Link>
 				</li>
 				<li>
-					<Link href='/swing'>
+					<Link
+						className='no-underline transition-all hover:text-primary'
+						href='/swing'
+					>
 						Эмоциональные качели: экзистенциальный диалог с собой
 					</Link>
 				</li>

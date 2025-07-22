@@ -16,7 +16,7 @@ export default async function TreePage() {
 			<div className='py-16 prose m-auto'>
 				<Breadcrumbs items={treeBreadcrumbs} />
 				<PageHeading title='Дефекты характера: как они формируются и как с ними работать' />
-				<FadeIn className='ind cont flex flex-col gap-6 md:gap-8 text-[15px] md:text-base leading-relaxed'>
+				<FadeIn className='ind cont flex flex-col gap-4 text-[15px] md:text-base leading-relaxed'>
 					<section>
 						<hr className='my-4' />
 						<h2 className='text-lg font-semibold mb-2 normal-case'>

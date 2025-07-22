@@ -32,7 +32,7 @@ const Header = ({ highlighting = false }: HeaderProps) => {
 	return (
 		<FadeIn className='cont'>
 			<header className='relative flex gap-6 justify-between items-center py-4 m-auto'>
-				<div className='my-4 flex flex-col z-20'>
+				<div className='flex flex-col z-20 pr-10 md:pr-0'>
 					<Logo />
 				</div>
 				{/* Desktop menu (md и выше) */}
