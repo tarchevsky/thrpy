@@ -22,8 +22,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 			<body>
 				<AnimatePresence>
 					<PageTransition>
-						<Header highlighting isBurgerVersion />
-						<div className='py-16 prose m-auto'>{children}</div>
+						<Header isBurgerVersion />
+						{children}
 						<Footer />
 					</PageTransition>
 				</AnimatePresence>

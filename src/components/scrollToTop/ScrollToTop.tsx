@@ -51,7 +51,7 @@ const ScrollToTop: FC = () => {
 							cursor: 'pointer'
 						}}
 					>
-						<IoIosArrowRoundUp size={20} color='#222' />
+						<IoIosArrowRoundUp size={20} />
 					</motion.button>
 				</motion.div>
 			)}

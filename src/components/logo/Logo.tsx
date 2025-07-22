@@ -5,7 +5,7 @@ import Link from 'next/link'
 const Logo = () => {
 	return (
 		<Link href='/'>
-			<span className='text-md'>Валентин Владимирович Пухов</span>
+			<span className='text-xl font-bold'>Валентин Владимирович Пухов</span>
 			<br />
 			<span className='text-xs'>клинический психолог</span>
 		</Link>

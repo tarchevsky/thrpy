@@ -12,10 +12,7 @@ import Logo from '../logo/Logo'
 import MobileMenuSheet from './MobileMenuSheet'
 
 const Header = ({ highlighting = false }: HeaderProps) => {
-	const menuItems: MenuItem[] = [
-		{ path: '/', label: 'Главная' },
-		{ path: '/contacts', label: 'Контакты' }
-	]
+	const menuItems: MenuItem[] = [{ path: '/', label: 'Главная' }]
 	const pathname = usePathname()
 	const [isMenuActive, setIsMenuActive] = useState(false)
 	const [mounted, setMounted] = useState(false)

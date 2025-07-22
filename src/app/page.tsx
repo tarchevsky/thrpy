@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
 	return (
-		<div className='cont'>
+		<div className='cont py-16 prose m-auto'>
 			<h1>Оглавление</h1>
 			<ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
 				<li>
