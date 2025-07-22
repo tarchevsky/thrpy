@@ -1,4 +1,5 @@
 import FadeIn from '@/components/fadeIn/FadeIn'
+import HomeLink from '@/components/homeLink/HomeLink'
 import PageHeading from '@/components/pageHeading/PageHeading'
 
 import type { Metadata } from 'next'
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default async function TreePage() {
 	return (
 		<>
+			<HomeLink />
 			<PageHeading
 				className='cont text-base font-semibold md:text-lg'
 				title='Дефекты характера: как они формируются и как с ними работать'
@@ -36,10 +38,10 @@ export default async function TreePage() {
 					</ul>
 				</section>
 
-				<section>
-					<h2 className='text-lg font-semibold mb-4 normal-case'>
-						1. Расширенная классификация дефектов характера
-					</h2>
+			   <section>
+				   <h2 className='text-lg font-semibold mb-4 normal-case'>
+					   1. Расширенная классификация дефектов характера
+				   </h2>
 					<div className='mb-4'>
 						<h3 className='font-medium'>
 							1. Лень{' '}
@@ -273,7 +275,7 @@ export default async function TreePage() {
 						интенсивных тренингов личностного роста.
 					</p>
 				</section>
-			</FadeIn>
-		</>
-	)
+		   </FadeIn>
+	   </>
+   )
 }

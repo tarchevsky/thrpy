@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 			<body>
 				<AnimatePresence>
 					<PageTransition>
-						<div className='py-10 prose m-auto'>{children}</div>
+						<div className='py-16 prose m-auto'>{children}</div>
 					</PageTransition>
 				</AnimatePresence>
 				<ScrollToTop />
