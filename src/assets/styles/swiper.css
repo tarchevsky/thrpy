@@ -1,0 +1,33 @@
+:root {
+	--swiper-material-scale: 1;
+	--swiper-material-slide-size: 100%;
+	--swiper-material-slide-border-radius: 32px;
+}
+
+.slider {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-shrink: 10;
+	min-height: 0;
+}
+
+.swiper-material {
+	height: 300px;
+	width: 100%;
+}
+
+.swiper-horizontal .swiper-material-content {
+	height: 100%;
+	width: var(--swiper-material-slide-size);
+	left: calc(50% - var(--swiper-material-slide-size) / 2);
+	top: 0;
+}
+
+.swiper-vertical .swiper-material-content {
+	width: 100%;
+	height: var(--swiper-material-slide-size);
+	top: calc(50% - var(--swiper-material-slide-size) / 2);
+	left: 0;
+}
