@@ -1,6 +1,7 @@
+import Breadcrumbs from '@/components/breadcrumbs/Breadcrumbs'
 import FadeIn from '@/components/fadeIn/FadeIn'
-import HomeLink from '@/components/homeLink/HomeLink'
 import PageHeading from '@/components/pageHeading/PageHeading'
+import { treeBreadcrumbs } from './breadcrumbsData'
 
 import type { Metadata } from 'next'
 
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
 export default async function TreePage() {
 	return (
 		<>
-			<HomeLink />
 			<div className='py-16 prose m-auto'>
+				<Breadcrumbs items={treeBreadcrumbs} />
 				<PageHeading title='Дефекты характера: как они формируются и как с ними работать' />
 				<FadeIn className='ind cont flex flex-col gap-6 md:gap-8 text-[15px] md:text-base leading-relaxed'>
 					<section>

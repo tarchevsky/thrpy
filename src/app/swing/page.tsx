@@ -1,6 +1,7 @@
+import Breadcrumbs from '@/components/breadcrumbs/Breadcrumbs'
 import FadeIn from '@/components/fadeIn/FadeIn'
-import HomeLink from '@/components/homeLink/HomeLink'
 import PageHeading from '@/components/pageHeading/PageHeading'
+import { swingBreadcrumbs } from './breadcrumbsData'
 
 import type { Metadata } from 'next'
 
@@ -13,8 +14,8 @@ export const metadata: Metadata = {
 export default function SwingPage() {
 	return (
 		<>
-			<HomeLink />
 			<div className='py-16 prose m-auto'>
+				<Breadcrumbs items={swingBreadcrumbs} />
 				<PageHeading title='Эмоциональные качели: экзистенциальный диалог с собой' />
 				<FadeIn className='ind cont flex flex-col gap-6 md:gap-8 text-[15px] md:text-base leading-relaxed '>
 					<section>
