@@ -11,86 +11,85 @@ import FadeIn from '../fadeIn/FadeIn'
 import Logo from '../logo/Logo'
 import styles from './Header.module.scss'
 
-
 const Header = ({
-  highlighting = false,
-  isBurgerVersion = false
+	highlighting = false,
+	isBurgerVersion = false
 }: HeaderProps) => {
-  const [isMenuActive, setIsMenuActive] = useState(false)
-  const [menuOffset, setMenuOffset] = useState(0) // px смещение меню вниз
+	const [isMenuActive, setIsMenuActive] = useState(false)
+	const [menuOffset, setMenuOffset] = useState(0) // px смещение меню вниз
 
-  const menuItems: MenuItem[] = [{ path: '/', label: 'Главная' }]
-  const pathname = usePathname()
+	const menuItems: MenuItem[] = [{ path: '/', label: 'Главная' }]
+	const pathname = usePathname()
 
-  const toggleMenu = () => {
-	setIsMenuActive(!isMenuActive)
-	setMenuOffset(0)
-  }
-
-  const handleMenuItemClick = (path: string) => {
-	if (path === pathname) {
-	  setIsMenuActive(false)
-	  setMenuOffset(0)
-	}
-  }
-
-  useEffect(() => {
-	setIsMenuActive(false)
-	setMenuOffset(0)
-  }, [pathname])
-
-  useEffect(() => {
-	if (isMenuActive) {
-	  document.body.style.overflow = 'hidden'
-	} else {
-	  document.body.style.overflow = 'unset'
-	  setMenuOffset(0)
-	}
-  }, [isMenuActive])
-
-  // --- swipe to close logic ---
-  const [touchStartY, setTouchStartY] = useState<number | null>(null)
-  const [currentTouchY, setCurrentTouchY] = useState<number | null>(null)
-
-  useEffect(() => {
-	if (!isMenuActive) return
-	const nav = document.getElementById('mobile-nav')
-	if (!nav) return
-
-	const handleTouchStart = (e: TouchEvent) => {
-	  setTouchStartY(e.touches[0].clientY)
-	  setCurrentTouchY(e.touches[0].clientY)
-	}
-	const handleTouchMove = (e: TouchEvent) => {
-	  if (touchStartY !== null) {
-		const delta = e.touches[0].clientY - touchStartY
-		setCurrentTouchY(e.touches[0].clientY)
-		setMenuOffset(delta > 0 ? delta : 0)
-	  }
-	}
-	const handleTouchEnd = () => {
-	  if (
-		touchStartY !== null &&
-		currentTouchY !== null &&
-		currentTouchY - touchStartY > 60
-	  ) {
-		setIsMenuActive(false)
-	  } else {
+	const toggleMenu = () => {
+		setIsMenuActive(!isMenuActive)
 		setMenuOffset(0)
-	  }
-	  setTouchStartY(null)
-	  setCurrentTouchY(null)
 	}
-	nav.addEventListener('touchstart', handleTouchStart)
-	nav.addEventListener('touchmove', handleTouchMove)
-	nav.addEventListener('touchend', handleTouchEnd)
-	return () => {
-	  nav.removeEventListener('touchstart', handleTouchStart)
-	  nav.removeEventListener('touchmove', handleTouchMove)
-	  nav.removeEventListener('touchend', handleTouchEnd)
+
+	const handleMenuItemClick = (path: string) => {
+		if (path === pathname) {
+			setIsMenuActive(false)
+			setMenuOffset(0)
+		}
 	}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMenuActive, touchStartY, currentTouchY])
+
+	useEffect(() => {
+		setIsMenuActive(false)
+		setMenuOffset(0)
+	}, [pathname])
+
+	useEffect(() => {
+		if (isMenuActive) {
+			document.body.style.overflow = 'hidden'
+		} else {
+			document.body.style.overflow = 'unset'
+			setMenuOffset(0)
+		}
+	}, [isMenuActive])
+
+	// --- swipe to close logic ---
+	const [touchStartY, setTouchStartY] = useState<number | null>(null)
+	const [currentTouchY, setCurrentTouchY] = useState<number | null>(null)
+
+	useEffect(() => {
+		if (!isMenuActive) return
+		const nav = document.getElementById('mobile-nav')
+		if (!nav) return
+
+		const handleTouchStart = (e: TouchEvent) => {
+			setTouchStartY(e.touches[0].clientY)
+			setCurrentTouchY(e.touches[0].clientY)
+		}
+		const handleTouchMove = (e: TouchEvent) => {
+			if (touchStartY !== null) {
+				const delta = e.touches[0].clientY - touchStartY
+				setCurrentTouchY(e.touches[0].clientY)
+				setMenuOffset(delta > 0 ? delta : 0)
+			}
+		}
+		const handleTouchEnd = () => {
+			if (
+				touchStartY !== null &&
+				currentTouchY !== null &&
+				currentTouchY - touchStartY > 60
+			) {
+				setIsMenuActive(false)
+			} else {
+				setMenuOffset(0)
+			}
+			setTouchStartY(null)
+			setCurrentTouchY(null)
+		}
+		nav.addEventListener('touchstart', handleTouchStart)
+		nav.addEventListener('touchmove', handleTouchMove)
+		nav.addEventListener('touchend', handleTouchEnd)
+		return () => {
+			nav.removeEventListener('touchstart', handleTouchStart)
+			nav.removeEventListener('touchmove', handleTouchMove)
+			nav.removeEventListener('touchend', handleTouchEnd)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isMenuActive, touchStartY, currentTouchY])
 
 	return (
 		<FadeIn className='cont'>
@@ -98,21 +97,35 @@ const Header = ({
 				<div className='my-4 flex flex-col z-20'>
 					<Logo />
 				</div>
-	<nav
-	  id='mobile-nav'
-	  style={isBurgerVersion && isMenuActive ? {
-		transform: `translateY(${menuOffset}px)`,
-		transition: touchStartY === null ? 'transform 0.3s cubic-bezier(0.4,0,0.2,1)' : 'none'
-	  } : {}}
-	  className={cn(
-		{ [styles.active]: isMenuActive },
-		'fixed z-20 w-full h-1/2 end-0 bottom-0 translate-y-full opacity-0 transition-all duration-300 ease-out',
-		{
-		  'md:static md:w-auto md:h-auto md:translate-y-0 md:opacity-100':
-			!isBurgerVersion
-		}
-	  )}
-	>
+				<nav
+					id='mobile-nav'
+					style={
+						isBurgerVersion && isMenuActive && menuOffset > 0
+							? {
+									transform: `translateY(${menuOffset}px)`,
+									transition:
+										touchStartY === null
+											? 'transform 0.3s cubic-bezier(0.4,0,0.2,1)'
+											: 'none',
+									willChange: 'transform'
+								}
+							: isBurgerVersion && isMenuActive
+								? {
+										transform: 'translateY(0)',
+										transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+										willChange: 'transform'
+									}
+								: {}
+					}
+					className={cn(
+						{ [styles.active]: isMenuActive },
+						'fixed z-20 w-full h-1/2 end-0 bottom-0 translate-y-full opacity-0 transition-all duration-300 ease-out',
+						{
+							'md:static md:w-auto md:h-auto md:translate-y-0 md:opacity-100':
+								!isBurgerVersion
+						}
+					)}
+				>
 					<ul
 						tabIndex={0}
 						className={cn(
