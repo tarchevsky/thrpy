@@ -48,7 +48,7 @@ const ScrollToTop: FC = () => {
 							background: 'none',
 							border: 'none',
 							padding: 0,
-							cursor: 'pointer',
+							cursor: 'pointer'
 						}}
 					>
 						<IoIosArrowRoundUp size={20} color='#222' />

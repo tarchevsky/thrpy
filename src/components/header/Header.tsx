@@ -11,58 +11,108 @@ import FadeIn from '../fadeIn/FadeIn'
 import Logo from '../logo/Logo'
 import styles from './Header.module.scss'
 
+
 const Header = ({
-	highlighting = false,
-	isBurgerVersion = false
+  highlighting = false,
+  isBurgerVersion = false
 }: HeaderProps) => {
-	const [isMenuActive, setIsMenuActive] = useState(false)
+  const [isMenuActive, setIsMenuActive] = useState(false)
+  const [menuOffset, setMenuOffset] = useState(0) // px смещение меню вниз
 
-	const menuItems: MenuItem[] = [
-		{ path: '/', label: 'Главная' },
-		{ path: '/contacts', label: 'Контакты' }
-	]
+  const menuItems: MenuItem[] = [{ path: '/', label: 'Главная' }]
+  const pathname = usePathname()
 
-	const pathname = usePathname()
+  const toggleMenu = () => {
+	setIsMenuActive(!isMenuActive)
+	setMenuOffset(0)
+  }
 
-	const toggleMenu = () => {
-		setIsMenuActive(!isMenuActive)
+  const handleMenuItemClick = (path: string) => {
+	if (path === pathname) {
+	  setIsMenuActive(false)
+	  setMenuOffset(0)
 	}
+  }
 
-	const handleMenuItemClick = (path: string) => {
-		if (path === pathname) {
-			setIsMenuActive(false)
-		}
+  useEffect(() => {
+	setIsMenuActive(false)
+	setMenuOffset(0)
+  }, [pathname])
+
+  useEffect(() => {
+	if (isMenuActive) {
+	  document.body.style.overflow = 'hidden'
+	} else {
+	  document.body.style.overflow = 'unset'
+	  setMenuOffset(0)
 	}
+  }, [isMenuActive])
 
-	useEffect(() => {
+  // --- swipe to close logic ---
+  const [touchStartY, setTouchStartY] = useState<number | null>(null)
+  const [currentTouchY, setCurrentTouchY] = useState<number | null>(null)
+
+  useEffect(() => {
+	if (!isMenuActive) return
+	const nav = document.getElementById('mobile-nav')
+	if (!nav) return
+
+	const handleTouchStart = (e: TouchEvent) => {
+	  setTouchStartY(e.touches[0].clientY)
+	  setCurrentTouchY(e.touches[0].clientY)
+	}
+	const handleTouchMove = (e: TouchEvent) => {
+	  if (touchStartY !== null) {
+		const delta = e.touches[0].clientY - touchStartY
+		setCurrentTouchY(e.touches[0].clientY)
+		setMenuOffset(delta > 0 ? delta : 0)
+	  }
+	}
+	const handleTouchEnd = () => {
+	  if (
+		touchStartY !== null &&
+		currentTouchY !== null &&
+		currentTouchY - touchStartY > 60
+	  ) {
 		setIsMenuActive(false)
-	}, [pathname])
-
-	useEffect(() => {
-		if (isMenuActive) {
-			document.body.style.overflow = 'hidden'
-		} else {
-			document.body.style.overflow = 'unset'
-		}
-	}, [isMenuActive])
+	  } else {
+		setMenuOffset(0)
+	  }
+	  setTouchStartY(null)
+	  setCurrentTouchY(null)
+	}
+	nav.addEventListener('touchstart', handleTouchStart)
+	nav.addEventListener('touchmove', handleTouchMove)
+	nav.addEventListener('touchend', handleTouchEnd)
+	return () => {
+	  nav.removeEventListener('touchstart', handleTouchStart)
+	  nav.removeEventListener('touchmove', handleTouchMove)
+	  nav.removeEventListener('touchend', handleTouchEnd)
+	}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMenuActive, touchStartY, currentTouchY])
 
 	return (
 		<FadeIn className='cont'>
 			<header className='relative flex gap-6 justify-between items-center py-4 m-auto'>
-				<Logo
-					className='my-4 flex flex-col z-20 font-bold text-2xl leading-[1.9rem]'
-					logo='ui<br />pack<br />next<br />'
-				/>
-				<nav
-					className={cn(
-						{ [styles.active]: isMenuActive },
-						'fixed z-20 w-full h-full end-0 bottom-0 -translate-y-full opacity-0 transition-all duration-300 ease-out',
-						{
-							'md:static md:w-auto md:h-auto md:translate-y-0 md:opacity-100':
-								!isBurgerVersion
-						}
-					)}
-				>
+				<div className='my-4 flex flex-col z-20'>
+					<Logo />
+				</div>
+	<nav
+	  id='mobile-nav'
+	  style={isBurgerVersion && isMenuActive ? {
+		transform: `translateY(${menuOffset}px)`,
+		transition: touchStartY === null ? 'transform 0.3s cubic-bezier(0.4,0,0.2,1)' : 'none'
+	  } : {}}
+	  className={cn(
+		{ [styles.active]: isMenuActive },
+		'fixed z-20 w-full h-1/2 end-0 bottom-0 translate-y-full opacity-0 transition-all duration-300 ease-out',
+		{
+		  'md:static md:w-auto md:h-auto md:translate-y-0 md:opacity-100':
+			!isBurgerVersion
+		}
+	  )}
+	>
 					<ul
 						tabIndex={0}
 						className={cn(

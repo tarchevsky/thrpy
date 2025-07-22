@@ -29,7 +29,7 @@ const Footer = () => {
 					</div>
 				</nav>
 				<aside>
-					<p>Copyright © {year} - tezis.digital</p>
+					<p>Copyright © {year}</p>
 				</aside>
 			</footer>
 		</FadeIn>

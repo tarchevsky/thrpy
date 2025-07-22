@@ -13,10 +13,7 @@ export default async function TreePage() {
 	return (
 		<>
 			<HomeLink />
-			<PageHeading
-				className='cont text-base font-semibold md:text-lg'
-				title='Дефекты характера: как они формируются и как с ними работать'
-			/>
+			<PageHeading title='Дефекты характера: как они формируются и как с ними работать' />
 			<FadeIn className='ind cont flex flex-col gap-6 md:gap-8 text-[15px] md:text-base leading-relaxed'>
 				<section>
 					<p className='text-lg font-semibold mb-2'>

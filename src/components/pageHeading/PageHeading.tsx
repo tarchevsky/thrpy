@@ -18,7 +18,7 @@ const PageHeading = ({
 }: PageHeadingProps) => {
 	return (
 		<>
-			<FadeIn className={cn(className, ind)}>
+			<FadeIn className={cn(className, ind, 'cont')}>
 				<main>
 					{breadcrumbs && breadcrumbs.length > 0 && (
 						<Breadcrumbs items={breadcrumbs} className='mb-2' />

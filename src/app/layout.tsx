@@ -1,5 +1,7 @@
 import '@/assets/styles/globals.css'
 import '@/assets/styles/swiper.css'
+import Footer from '@/components/footer/Footer'
+import Header from '@/components/header/Header'
 import PageTransition from '@/components/pageTransition/PageTransition'
 import ScrollToTop from '@/components/scrollToTop/ScrollToTop'
 import '@fontsource-variable/raleway'
@@ -20,7 +22,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 			<body>
 				<AnimatePresence>
 					<PageTransition>
+						<Header highlighting />
 						<div className='py-16 prose m-auto'>{children}</div>
+						<Footer />
 					</PageTransition>
 				</AnimatePresence>
 				<ScrollToTop />
