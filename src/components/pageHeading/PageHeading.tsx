@@ -23,7 +23,7 @@ const PageHeading = ({
 					{breadcrumbs && breadcrumbs.length > 0 && (
 						<Breadcrumbs items={breadcrumbs} className='mb-2' />
 					)}
-					<h1 className={`text-6xl font-medium uppercase`}>{title}</h1>
+					<h1 className={`text-4xl font-medium`}>{title}</h1>
 				</main>
 			</FadeIn>
 		</>
