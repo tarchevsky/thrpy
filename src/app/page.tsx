@@ -15,7 +15,17 @@ export const metadata: Metadata = {
 export default function HomePage() {
 	return (
 		<div className='cont'>
-			<Link href='/tree'>Дерево дефектов</Link>
+			<h1>Оглавление</h1>
+			<ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+				<li>
+					<Link href='/tree'>Дерево дефектов</Link>
+				</li>
+				<li>
+					<Link href='/swing'>
+						Эмоциональные качели: экзистенциальный диалог с собой
+					</Link>
+				</li>
+			</ul>
 		</div>
 	)
 }
